@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebDev</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      text-align: center;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+    }
+
+    body {
+      margin-top: 100px;
+      font-family: sans-serif;
+      background-color: whitesmoke;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    main {
+      margin: 10px;
+      width: 100%;
+      max-width: 600px;
+      padding: 50px;
+      font-size: 20px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.2);
+    }
+
+    input {
+      outline: none;
+      border-radius: 10px;
+      font-size: 18px;
+      padding: 5px;
+      width: 100px;
+      border: 2px solid whitesmoke;
+      background-color: whitesmoke;
+    }
+
+    input:focus {
+      border: 2px solid #2196f3;
+    }
+
+    button {
+      margin-top: 30px;
+      padding: 10px;
+      width: 200px;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      font-weight: bold;
+      border-radius: 200px;
+      background-color: #ff9800;
+    }
+
+    section {
+      margin-top: 10px;
+    }
+
+    .option {
+      border-radius: 5px;
+      background-color: whitesmoke;
+      border: 3px solid whitesmoke;
+      padding: 5px;
+      cursor: pointer;
+    }
+
+    .option.active {
+      border: 3px solid #2196f3;
+      background-color: #e3f2fd;
+    }
+
+    .loader {
+      margin: 0 auto;
+      border: 8px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 8px solid #2196f3;
+      width: 64px;
+      height: 64px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="tingle.min.css">
+</head>
+
+<body>
+  <main>
+    <h6>Choose Platform:</h6>
+    <section style="display: flex; justify-content: center;">
+      <div id="go" class="option" onclick="setState('lang', 'go')">
+        <div
+          style="background-image: url(golang.png); background-size: contain; background-repeat: no-repeat; background-position: center; height: 64px; width: 64px;">
+        </div>
+        <small>golang</small>
+      </div>
+      <div style="width: 10px"></div>
+      <div id="node" class="option" onclick="setState('lang', 'node')">
+        <div
+          style="background-image: url(nodejs.png); background-size: contain; background-repeat: no-repeat; background-position: center; height: 64px; width: 64px;">
+        </div>
+        <small>nodejs</small>
+      </div>
+    </section>
+    <br />
+    <h6>Choose Action:</h6>
+    <section style="display: flex; justify-content: center;">
+      <code id="sha" class="option" onclick="setState('action', 'sha')">SHA256</code>
+      <div style="width: 10px"></div>
+      <code id="write" class="option" onclick="setState('action', 'write')">Write</code>
+    </section>
+    <br />
+    <form>
+      <section id="dynamic">
+      </section>
+    </form>
+  </main>
+
+  <script src="tingle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+  <script>
+    const modal = new tingle.modal()
+
+    const goEl = document.getElementById('go')
+    const nodeEl = document.getElementById('node')
+    const shaEl = document.getElementById('sha')
+    const writeEl = document.getElementById('write')
+    const dynamicEl = document.getElementById('dynamic')
+
+    let state = { lang: null, action: null }
+    function setState(key, value) {
+      state[key] = value
+      render()
+    }
+
+    function submit(e) {
+      e.preventDefault()
+
+      const url = `/${state.lang}/${state.action}`
+      modal.setContent('<div class="loader"></div>').open()
+
+      if (state.action === 'sha') {
+        axios.post(url, { n1: parseInt(document.getElementById('num1').value), n2: parseInt(document.getElementById('num2').value) })
+          .then(res => {
+            modal.setContent(`<h3>Result:</h3><br />${res.data.Result}`)
+          })
+      } else {
+        axios.get(url, { params: { lineNumber: document.getElementById('num1').value } })
+          .then(res => {
+            modal.setContent(`<h3>Result:</h3><br />${res.data.Result}`)
+          })
+      }
+    }
+
+    function render() {
+      if (state.lang === 'go') {
+        nodeEl.classList.remove('active')
+        goEl.classList.add('active')
+      }
+      if (state.lang === 'node') {
+        goEl.classList.remove('active')
+        nodeEl.classList.add('active')
+      }
+      if (state.action === 'sha') {
+        writeEl.classList.remove('active')
+        shaEl.classList.add('active')
+      }
+      if (state.action === 'write') {
+        shaEl.classList.remove('active')
+        writeEl.classList.add('active')
+      }
+      if (state.lang && state.action) {
+        const url = `/${state.lang}/${state.action}`
+        const writeForm = `
+        <h6>Enter Line number to show from file:</h6>
+        <section>
+          <input required id="num1" placeholder="Line #" type="number" />
+        </section>`
+        const shaForm = `
+          <h6>Enter 2 numbers to get SHA256 of their SUM:</h6>
+          <section>
+            <input required id="num1" placeholder="Num1" type="number" />
+            <input required id="num2" placeholder="Num2" type="number" />
+          </section>`
+
+        dynamicEl.innerHTML = `
+          <div style="font-size: 14px;">URL:
+            <code style="background-color: whitesmoke; color: darkred">${url}</code>
+          </div>
+          <section>${state.action === 'sha' ? shaForm : writeForm}</section>
+          <button>SUBMIT</button>`
+      }
+    }
+
+    for (let form of document.getElementsByTagName('form')) {
+      form.addEventListener('submit', submit)
+    }
+  </script>
+</body>
+
+</html>
