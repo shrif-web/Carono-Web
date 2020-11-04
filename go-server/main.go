@@ -31,10 +31,6 @@ func showSum(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	n1 := r.Form.Get("n1")
 	n2 := r.Form.Get("n2")
-	n1Int, err := strconv.ParseInt(n1, 10, 64)
-	check(err)
-	n2Int, err := strconv.ParseInt(n2, 10, 64)
-	check(err)
 	result := sum(int(n1Int), int(n2Int))
 	hexResult := fmt.Sprintf("%x", result)
 
