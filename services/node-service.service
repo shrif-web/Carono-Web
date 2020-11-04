@@ -1,0 +1,11 @@
+[Unit]
+Description=Carono nodejs
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=2s
+ExecStart=/usr/bin/node root/Carono-Web/node-server/index.js
+
+[Install]
+WantedBy=multi-user.target

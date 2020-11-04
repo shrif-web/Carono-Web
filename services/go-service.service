@@ -1,0 +1,12 @@
+[Unit]
+Description=Carono go app
+
+[Service]
+WorkingDirectory=root/Carono-Web/go-server
+Type=simple
+Restart=always
+RestartSec=2s
+ExecStart=root/Carono-Web/go-server/main
+
+[Install]
+WantedBy=multi-user.target
