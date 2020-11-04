@@ -161,11 +161,15 @@
         axios.post(url, { n1: parseInt(document.getElementById('num1').value), n2: parseInt(document.getElementById('num2').value) })
           .then(res => {
             modal.setContent(`<h3>Result:</h3><br />${res.data.Result}`)
+          }).catch(error => {
+            modal.setContent('Your input was not valid!')
           })
       } else {
         axios.get(url, { params: { lineNumber: document.getElementById('num1').value } })
           .then(res => {
             modal.setContent(`<h3>Result:</h3><br />${res.data.Result}`)
+          }).catch(error => {
+            modal.setContent('Your input was not valid!')
           })
       }
     }

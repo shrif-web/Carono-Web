@@ -20,7 +20,7 @@ app.get('/write', (req, res) => {
 })
 
 app.post('/sha', (req, res) => {
-  if (req.body.n1 && req.body.n2) {
+  if (req.body.n1 !== undefined && req.body.n2 !== undefined) {
     const sum = req.body.n1 + req.body.n2
     res.json({
       Result: crypto.createHash('sha256').update(sum.toString()).digest('hex'),
