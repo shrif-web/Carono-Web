@@ -31,7 +31,7 @@ func showSum(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	n1 := r.Form.Get("n1")
 	n2 := r.Form.Get("n2")
-	result := sum(int(n1Int), int(n2Int))
+	result := sum(int(n1), int(n2))
 	hexResult := fmt.Sprintf("%x", result)
 
 	w.Header().Set("Content-Type", "application/json")
