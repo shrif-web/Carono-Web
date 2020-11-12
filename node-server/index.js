@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const crypto = require('crypto')
 const fs = require('fs')
+const path = require('path')
 
 const app = express()
 app.use(bodyParser.json())
@@ -12,7 +13,7 @@ app.get('/write', (req, res) => {
   if (isNaN(lineNumber) || lineNumber < 1 || lineNumber > 100) {
     res.status(400).send('you must provide lineNumber as a query param')
   } else {
-    fs.readFile('../sample.txt', 'utf8', (err, content) => {
+    fs.readFile(path.join(__dirname, '../sample.txt'), 'utf8', (err, content) => {
       const line = content.split('\n')[lineNumber - 1]
       res.json({ Result: line })
     })
